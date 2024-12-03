@@ -1,0 +1,122 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+/*
+ * Copyright (C) STMicroelectronics 2019 - All Rights Reserved
+ * Author: Alexandre Torgue <alexandre.torgue@st.com> for STMicroelectronics.
+ */
+
+/dts-v1/;
+
+#include "stm32mp157.dtsi"
+#include "stm32mp15xa.dtsi"
+#include "stm32mp15-pinctrl.dtsi"
+#include "stm32mp15xxac-pinctrl.dtsi"
+#include "stm32mp15xx-self.dtsi"
+#include "stm32mp157a-self-scmi.dtsi"
+
+/ {
+	model = "STMicroelectronics STM32MP157A-SELF Discovery Board";
+	compatible = "st,stm32mp157a-self", "st,stm32mp157";
+
+	aliases {
+		ethernet0 = &ethernet0;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+};
+
+&pinctrl {
+	pwm1_pins_c: pwm1-1 {
+		pins {
+			pinmux = <STM32_PINMUX('E', 9, AF1)>; /* TIM1_CH1 fan */
+			bias-pull-down;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	pwm1_sleep_pins_c: pwm1-sleep-1 {
+		pins {
+			pinmux = <STM32_PINMUX('E', 9, ANALOG)>; /* TIM1_CH1 fan */
+		};
+	};
+
+	pwm4_pins_c: pwm4-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 6, AF2)>; /* TIM4_CH1 beep */
+			bias-pull-down;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	pwm4_sleep_pins_c: pwm4-sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 6, ANALOG)>; /* TIM4_CH1 beep */
+		};
+	};
+
+	pwm16_pins_a: pwm16-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 6, AF1)>; /* TIM16_CH1 motor */
+			bias-pull-down;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	pwm16_sleep_pins_a: pwm16-sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 6, ANALOG)>; /* TIM16_CH1 motor */
+		};
+	};
+};
+
+&timers1 {
+	/* spare dmas for other usage */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	status = "okay";
+
+	pwm1: pwm {
+		label = "beep";
+		pinctrl-0 = <&pwm1_pins_c>;
+		pinctrl-1 = <&pwm1_sleep_pins_c>;
+		pinctrl-names = "default", "sleep";
+		#pwm-cells = <2>;
+		status = "okay";
+	};
+};
+
+&timers4 {
+	/* spare dmas for other usage */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	status = "okay";
+
+	pwm4: pwm {
+		label = "fans";
+		pinctrl-0 = <&pwm4_pins_c>;
+		pinctrl-1 = <&pwm4_sleep_pins_c>;
+		pinctrl-names = "default", "sleep";
+		#pwm-cells = <2>;
+		status = "okay";
+	};
+};
+
+&timers16 {
+	/* spare dmas for other usage */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	status = "okay";
+
+	pwm16: pwm {
+		label = "motor";
+		pinctrl-0 = <&pwm16_pins_a>;
+		pinctrl-1 = <&pwm16_sleep_pins_a>;
+		pinctrl-names = "default", "sleep";
+		#pwm-cells = <2>;
+		status = "okay";
+	};
+};

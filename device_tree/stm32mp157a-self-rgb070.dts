@@ -1,0 +1,53 @@
+#include "stm32mp157a-self-extend.dts"
+
+/ {
+    model = "TM32MP157 SELF RGB Discovery Board";
+    compatible = "st,stm32mp157a-self", "st,stm32mp157";
+
+    panel: panel-rgb {
+        compatible = "innolux,zj070na-01p";
+        pinctrl-names = "default", "sleep";
+        backlight = <&panel_backlight>;
+        status = "okay";
+        port {
+            panel_in_rgb: endpoint {
+                remote-endpoint = <&ltdc_ep1_out>;
+            };
+        };
+    };
+};
+
+&ltdc {
+    status = "okay";
+    port {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        ltdc_ep1_out: endpoint@1 {
+            reg = <1>;
+            remote-endpoint = <&panel_in_rgb>;
+        };
+    };
+};
+
+&i2c2 {
+    pinctrl-names = "default", "sleep";
+    pinctrl-0 = <&i2c2_pins_a>;
+    pinctrl-1 = <&i2c2_sleep_pins_a>;
+    i2c-scl-rising-time-ns = <100>;
+    i2c-scl-falling-time-ns = <7>;
+    status = "okay";
+    /delete-property/dmas;
+    /delete-property/dma-names;
+    touchscreen@5d {
+        compatible = "goodix,gt911";
+        reg = <0x5d>;
+        irq-gpios = <&gpiog 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        reset-gpios = <&gpiog 8 GPIO_ACTIVE_HIGH>;
+        interrupt-parent = <&gpiog>;
+        interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
+        status = "okay";
+        // touchscreen-inverted-x;
+        touchscreen-inverted-y;
+        touchscreen-swapped-x-y;
+    };
+};

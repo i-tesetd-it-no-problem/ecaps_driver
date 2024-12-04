@@ -120,3 +120,16 @@
 		status = "okay";
 	};
 };
+
+&adc {
+	vdd-supply = <&vdd>;
+	vdda-supply = <&vdd>;
+	vref-supply = <&vdd>;
+	status = "okay";
+	
+	adc1: adc@0 {
+		st,adc-channels = <0 1>;
+		st,min-sample-time-nsecs = <10000>;
+		status = "okay";
+	};
+};

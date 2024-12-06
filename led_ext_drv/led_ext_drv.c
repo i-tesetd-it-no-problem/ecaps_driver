@@ -115,9 +115,6 @@ static int led_remove(struct platform_device *pdev)
 
     class_destroy(pdata->class);
     unregister_chrdev_region(pdata->leds[0].dev_id, pdata->led_count);
-    kfree(pdata->leds);
-    kfree(pdata);
-
     pr_info("LED platform driver removed\n");
 
     return 0;

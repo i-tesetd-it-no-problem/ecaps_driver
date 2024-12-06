@@ -813,19 +813,6 @@
     };
 };
 
-&spi4 {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&spi4_pins_a>;
-	cs-gpios = <&gpioe 11 0>;
-	status = "okay";
-
-	m74hc595: m74hc595@0 {
-		compatible = "m74hc595";
-		reg = <0>;
-		spi-max-frequency = <100000>;
-	};
-};
-
 &spi5 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&spi5_pins_a>;

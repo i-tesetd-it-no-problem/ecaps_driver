@@ -71,6 +71,21 @@
 			pinmux = <STM32_PINMUX('F', 6, ANALOG)>; /* TIM16_CH1 motor */
 		};
 	};
+
+	spi4_pins_c: spi4-2 {
+		pins {
+			pinmux = <STM32_PINMUX('E', 11, AF5)>, /* SPI4_NSS */
+					<STM32_PINMUX('E', 12, AF5)>, /* SPI4_SCK */
+					<STM32_PINMUX('E', 14, AF5)>; /* SPI4_MOSI */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <1>;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('E', 13, AF5)>; /* SPI4_MISO */
+			bias-disable;
+		};
+	};
 };
 
 &timers1 {
@@ -126,10 +141,24 @@
 	vdda-supply = <&vdd>;
 	vref-supply = <&vdd>;
 	status = "okay";
-	
+
 	adc1: adc@0 {
 		st,adc-channels = <0 1>;
 		st,min-sample-time-nsecs = <10000>;
 		status = "okay";
+	};
+};
+
+&spi4 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&spi4_pins_c>;
+	cs-gpios = <&gpioe 11 0>;
+	status = "okay";
+
+	m74hc595: m74hc595@0 {
+		compatible = "m74hc595";
+		label = "hello";
+		reg = <0>;
+		spi-max-frequency = <100000>;
 	};
 };

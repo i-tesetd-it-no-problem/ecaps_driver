@@ -139,7 +139,7 @@ static int SI7006_open(struct inode *inode, struct file *file)
 
 	uint8_t config_data = 0; // 默认配置
 
-	// 写入用户寄存器1，禁用加热器并设置默认分辨率
+	// 写入用户寄存器1,禁用加热器并设置默认分辨率
 	int ret = si7006_write_data(SI7006, WRITE_USER_REG_1, config_data);
 	if (ret) {
 		pr_err("init device failed with err:%d\n", ret);

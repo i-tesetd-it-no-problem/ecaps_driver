@@ -128,7 +128,7 @@ static int m74hc595_probe(struct spi_device *spi)
 	}
 
 	/* 设置 SPI 参数 */
-	spi->mode = SPI_MODE_0;		// MODE0，CPOL=0，CPHA=0
+	spi->mode = SPI_MODE_0;		// MODE0,CPOL=0,CPHA=0
 	spi->bits_per_word = 8;		// 每字8位
 	spi->max_speed_hz = 250000; // 250KHz 最低250K
 

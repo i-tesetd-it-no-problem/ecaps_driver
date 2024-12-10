@@ -1,7 +1,7 @@
 import os
 
 def collect():
-    # 新建modules文件夹，保存所有的ko文件
+    # 新建modules文件夹,保存所有的ko文件
     dest_dir_name = "modules"
     cur_path = os.getcwd()
     dest_path = os.path.join(cur_path, dest_dir_name)
@@ -17,7 +17,7 @@ def collect():
         if sub_dir != dest_dir_name and os.path.isdir(sub_dir_path):
             sub_dirs.append(sub_dir)
 
-    # 遍历除modules文件夹外的其他文件夹，把所有ko文件复制到modules文件夹
+    # 遍历除modules文件夹外的其他文件夹,把所有ko文件复制到modules文件夹
     for sub_dir in sub_dirs:
         sub_dir_path = os.path.join(cur_path, sub_dir)
         for file_name in os.listdir(sub_dir_path):

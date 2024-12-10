@@ -578,7 +578,7 @@
 			port@0 {
 				reg = <0>;
 				sii9022_in: endpoint {
-					/*视频输入端口，与 LTDC 输出端口对接*/
+					/*视频输入端口,与 LTDC 输出端口对接*/
 					remote-endpoint = <&ltdc_ep0_out>;
 				};
 			};
@@ -586,7 +586,7 @@
 			port@3 {
 				reg = <3>;
 				sii9022_tx_endpoint: endpoint {
-					/*音频输入端口，与声卡输出端口对接*/
+					/*音频输入端口,与声卡输出端口对接*/
 					remote-endpoint = <&i2s2_endpoint>;
 				};
 			};

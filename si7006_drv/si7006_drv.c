@@ -129,8 +129,6 @@ static int si7006_read_after_measure(struct SI7006_dev *si7006, enum si7006_cmd 
 		return (ret < 0) ? ret : -EIO;
 	}
 
-	pr_info("Read data: 0x%02X 0x%02X\n", p_buf[0], p_buf[1]);
-
 	return 0;
 }
 
@@ -149,8 +147,6 @@ static int SI7006_open(struct inode *inode, struct file *file)
 	}
 
 	file->private_data = SI7006;
-
-	pr_info("si7006 init successful\n");
 
 	return 0;
 }
@@ -188,8 +184,6 @@ static ssize_t SI7006_write(struct file *file, const char __user *buf, size_t le
 		pr_err("Invalid user command from user space: %u\n", user_cmd);
 		return -EINVAL;
 	}
-
-	pr_info("Received user command: %u\n", user_cmd);
 
 	int ret =
 		si7006_read_after_measure(file->private_data, (enum si7006_cmd)user_cmd); // 发送测量指令
@@ -249,8 +243,6 @@ static int si7006_probe(struct i2c_client *client, const struct i2c_device_id *i
 	}
 
 	dev_set_drvdata(&client->dev, si7006);
-
-	pr_info("si7006 driver init success\n");
 
 	return 0;
 
@@ -313,3 +305,5 @@ module_init(si7006_init);
 module_exit(si7006_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Driver for Si7006 Humidity and Temperature Sensor");
+
+// scp si7006_drv.ko wenshuyu@192.168.1.6:/home/wenshuyu/ecaps_driver

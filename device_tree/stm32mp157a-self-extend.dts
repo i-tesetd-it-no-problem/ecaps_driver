@@ -19,6 +19,7 @@
 
 	aliases {
 		ethernet0 = &ethernet0;
+		serial1 = &uart5;
 	};
 
 	chosen {
@@ -27,66 +28,52 @@
 };
 
 &pinctrl {
-	pwm1_pins_c: pwm1-1 {
-		pins {
-			pinmux = <STM32_PINMUX('E', 9, AF1)>; /* TIM1_CH1 fan */
-			bias-pull-down;
-			drive-push-pull;
-			slew-rate = <0>;
-		};
-	};
+    pwm1_pins_c: pwm1-1 {
+        bias-pull-down;
+        drive-push-pull;
+        slew-rate = <0>;
+        pins {
+            pinmux = <STM32_PINMUX('E', 9, AF1)>; /* TIM1_CH1 fan */
+        };
+    };
 
-	pwm1_sleep_pins_c: pwm1-sleep-1 {
-		pins {
-			pinmux = <STM32_PINMUX('E', 9, ANALOG)>; /* TIM1_CH1 fan */
-		};
-	};
+    pwm1_sleep_pins_c: pwm1-sleep-1 {
+        pins {
+            pinmux = <STM32_PINMUX('E', 9, ANALOG)>; /* TIM1_CH1 fan */
+        };
+    };
 
-	pwm4_pins_c: pwm4-0 {
-		pins {
-			pinmux = <STM32_PINMUX('B', 6, AF2)>; /* TIM4_CH1 beep */
-			bias-pull-down;
-			drive-push-pull;
-			slew-rate = <0>;
-		};
-	};
+    pwm4_pins_c: pwm4-0 {
+        bias-pull-down;
+        drive-push-pull;
+        slew-rate = <0>;
+        pins {
+            pinmux = <STM32_PINMUX('B', 6, AF2)>; /* TIM4_CH1 beep */
+        };
+    };
 
-	pwm4_sleep_pins_c: pwm4-sleep-0 {
-		pins {
-			pinmux = <STM32_PINMUX('B', 6, ANALOG)>; /* TIM4_CH1 beep */
-		};
-	};
+    pwm4_sleep_pins_c: pwm4-sleep-0 {
+        pins {
+            pinmux = <STM32_PINMUX('B', 6, ANALOG)>; /* TIM4_CH1 beep */
+        };
+    };
 
-	pwm16_pins_a: pwm16-0 {
-		pins {
-			pinmux = <STM32_PINMUX('F', 6, AF1)>; /* TIM16_CH1 motor */
-			bias-pull-down;
-			drive-push-pull;
-			slew-rate = <0>;
-		};
-	};
+    pwm16_pins_a: pwm16-0 {
+        bias-pull-down;
+        drive-push-pull;
+        slew-rate = <0>;
+        pins {
+            pinmux = <STM32_PINMUX('F', 6, AF1)>; /* TIM16_CH1 motor */
+        };
+    };
 
-	pwm16_sleep_pins_a: pwm16-sleep-0 {
-		pins {
-			pinmux = <STM32_PINMUX('F', 6, ANALOG)>; /* TIM16_CH1 motor */
-		};
-	};
-
-	spi4_pins_c: spi4-2 {
-		pins {
-			pinmux = <STM32_PINMUX('E', 11, AF5)>, /* SPI4_NSS */
-					<STM32_PINMUX('E', 12, AF5)>, /* SPI4_SCK */
-					<STM32_PINMUX('E', 14, AF5)>; /* SPI4_MOSI */
-			bias-disable;
-			drive-push-pull;
-			slew-rate = <1>;
-		};
-		pins2 {
-			pinmux = <STM32_PINMUX('E', 13, AF5)>; /* SPI4_MISO */
-			bias-disable;
-		};
-	};
+    pwm16_sleep_pins_a: pwm16-sleep-0 {
+        pins {
+            pinmux = <STM32_PINMUX('F', 6, ANALOG)>; /* TIM16_CH1 motor */
+        };
+    };
 };
+
 
 &timers1 {
 	/* spare dmas for other usage */
@@ -150,15 +137,67 @@
 };
 
 &spi4 {
+    pinctrl-names = "default", "sleep";
+    pinctrl-0 = <&spi4_pins_b>;
+    pinctrl-1 = <&spi4_sleep_pins_b>;
+    cs-gpios = <&gpioe 11 GPIO_ACTIVE_LOW>;
+    status = "okay";
+
+    m74hc595: m74hc595@0 {
+        compatible = "m74hc595";
+        label = "hello";
+        reg = <0>;
+        spi-max-frequency = <500000>;
+        status = "okay";
+    };
+};
+
+&i2c1 {
 	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&spi4_pins_c>;
-	cs-gpios = <&gpioe 11 0>;
+	pinctrl-0 = <&i2c1_pins_b>;
+	pinctrl-1 = <&i2c1_sleep_pins_b>;
+	i2c-scl-rising-time-ns = <100>;	//上升沿时间毫秒
+    i2c-scl-falling-time-ns = <7>;	//下降沿时间
+	/delete-property/dmas;      	//删除dma属性
+    /delete-property/dma-names;
 	status = "okay";
 
-	m74hc595: m74hc595@0 {
-		compatible = "m74hc595";
-		label = "hello";
-		reg = <0>;
-		spi-max-frequency = <100000>;
+	si7006: si7006@40 {
+		compatible = "si7006";
+		reg = <0x40>;
+	};
+
+	ap3216c: ap3216c@1e {
+		compatible = "ap3216c";
+		reg = <0x1e>;
+	};
+
+	max30102: max30102@57 {
+		compatible = "maxim,max30102";
+		reg = <0x57>;
+		maxim,red-led-current-microamp = <7000>;
+		maxim,ir-led-current-microamp = <7000>;
+		interrupt-parent = <&gpiob>;
+		interrupts = <12 IRQ_TYPE_EDGE_FALLING >;
+	};
+};
+
+&uart5 {
+	pinctrl-names = "default", "no_console_suspend";
+	pinctrl-0 = <&uart5_pins_a>;
+	/delete-property/dmas;
+	/delete-property/dma-names;
+	status = "okay";
+};
+
+&m_can1 {
+	label = "can test";
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&m_can1_pins_a>;
+	pinctrl-1 = <&m_can1_sleep_pins_a>;
+	clocks = <&scmi_clk CK_SCMI_HSE>, <&rcc FDCAN_K>;
+	status = "okay";
+	can-transmitter {
+		max-bitrate = <5000000>;
 	};
 };

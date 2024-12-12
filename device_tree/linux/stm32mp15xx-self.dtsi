@@ -83,16 +83,6 @@
 		type = "a";
 	};
 
-	led {
-		compatible = "gpio-leds";
-		led-blue {
-			label = "heartbeat";
-			gpios = <&gpiod 11 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "heartbeat";
-			default-state = "off";
-		};
-	};
-
 	sound {
 		compatible = "audio-graph-card";
 		label = "STM32MP15-SELF";
